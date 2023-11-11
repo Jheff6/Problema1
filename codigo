@@ -1,0 +1,84 @@
+# Solicitar la información inicial del curso
+print("Bienvenido al sistema de calificaciones del curso")
+nombre_curso = input("Ingrese el nombre del curso: ")
+cantidad_alumnos = int(input("Ingrese la cantidad de alumnos inscritos: "))
+evaluaciones = int(input("Ingrese la cantidad de evaluaciones: "))
+
+ponderaciones = []
+for i in range(evaluaciones):
+    ponderacion = float(input("Ingrese ponderación para evaluación {}: ".format(i + 1)))
+    ponderaciones.append(ponderacion)
+
+tiene_examen = input("¿Tiene examen? (Sí o No): ")
+ponderacion_examen = 0
+if tiene_examen == "Sí":
+    ponderacion_examen = float(input("Ingrese ponderación del examen: "))
+
+tipo_asignatura = input("Ingrese el tipo de asignatura (Teórico o Práctico): ")
+
+# Diccionarios para almacenar información de notas y asistencias
+notas = {}
+asistencias = {}
+
+# Menú principal
+while True:
+    print("\nMENU:")
+    print("1. Ingreso de cada Evaluación")
+    print("2. Ingreso Asistencia")
+    print("3. Condición Final Alumno")
+    print("4. Promedio General")
+    print("5. Salir")
+
+    opcion = int(input("Seleccione una opción: "))
+
+    if opcion == 1:
+        # Ingreso de notas por evaluación
+        for i in range(cantidad_alumnos):
+            alumno = input("Ingrese el nombre del alumno {}: ".format(i + 1))
+            if alumno not in notas:
+                notas[alumno] = []
+            nota = float(input("Ingrese nota para {} en evaluación {}: ".format(alumno, len(notas[alumno]) + 1)))
+            notas[alumno].append(nota)
+
+    elif opcion == 2:
+        # Ingreso de porcentaje de asistencia
+        for i in range(cantidad_alumnos):
+            alumno = input("Ingrese el nombre del alumno {}: ".format(i + 1))
+            asistencia = float(input("Ingrese porcentaje de asistencia para {}: ".format(alumno)))
+            asistencias[alumno] = asistencia
+
+    elif opcion == 3:
+        # Condición final del alumno
+        alumno = input("Ingrese el nombre del alumno: ")
+        if alumno in notas and alumno in asistencias:
+            total_notas = sum(notas[alumno])
+            promedio_notas = total_notas / evaluaciones
+            porcentaje_asistencia = asistencias[alumno]
+            nota_final = (promedio_notas * sum(ponderaciones) / 100) + (ponderacion_examen * ponderacion_examen / 100)
+            if (tipo_asignatura == "Práctico" and porcentaje_asistencia >= 80) or (tipo_asignatura == "Teórico" and porcentaje_asistencia >= 60):
+                condicion = "APROBADO"
+            else:
+                condicion = "REPROBADO"
+            print("Condición final para {}: {}".format(alumno, condicion))
+            print("Nota final: {}".format(nota_final))
+            print("Asistencia: {}%".format(porcentaje_asistencia))
+        else:
+            print("Falta información para este alumno.")
+
+    elif opcion == 4:
+        # Promedio general del curso
+        suma_notas = 0
+        suma_asistencias = 0
+        for alumno in notas:
+            suma_notas += sum(notas[alumno])
+            suma_asistencias += asistencias[alumno]
+        promedio_general = suma_notas / (evaluaciones * cantidad_alumnos)
+        print("Promedio general del curso: {}".format(promedio_general))
+
+    elif opcion == 5:
+        # Salir del programa
+        print("¡Hasta luego!")
+        break
+
+    else:
+        print("Opción inválida. Por favor, seleccione una opción válida.")
